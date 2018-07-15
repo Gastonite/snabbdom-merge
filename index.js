@@ -34,7 +34,19 @@ var mergeKey = curryN(4, function (data1, data2, result, key) {
 });
 
 
+var parseSelector = function (selector) {
 
+  var matches = selector.match(/\#[\w-]+/, ''); // eslint-disable-line no-useless-escape
+  var id = matches && matches[0] || '';
+  selector = (!id ? selector : selector.replace(id, '')).split('.');
+
+  return {
+    tag: selector[0],
+    classes: selector.slice(1),
+    id,
+    selector
+  };
+};
 // Merge some data properties, favoring vnode2
 // Chain all hook and eventlistener functions together
 // Concat selectors together
@@ -45,7 +57,19 @@ var mergeVnodes = curryN(2, function (vnode1, vnode2) {
   var chained = reduce(chainFuncs(vnode1.data, vnode2.data), merged, toChain);
   var data = compose(mergeObj(vnode1.data), mergeObj(vnode2.data))(chained);
   var children = concat(vnode1.children || [], vnode2.children || []);
-  return h(vnode2.sel, data, children);
+
+  var vnode1Sel = parseSelector(vnode1.sel);
+  var vnode2Sel = parseSelector(vnode2.sel);
+
+  var classes = ['']
+    .concat(vnode1Sel.classes)
+    .concat(vnode2Sel.classes);
+
+  return h(
+    vnode2Sel.tag + vnode2Sel.id + classes.join('.'),
+    data,
+    children
+  );
 });
 
 module.exports = mergeVnodes;
