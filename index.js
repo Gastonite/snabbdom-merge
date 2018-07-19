@@ -3,7 +3,6 @@ var curryN = require('ramda/src/curryN');
 var mergeObj = require('ramda/src/merge');
 var assoc = require('ramda/src/assoc');
 var reduce = require('ramda/src/reduce');
-var compose = require('ramda/src/compose');
 var concat = require('ramda/src/concat');
 var mergeWith = require('ramda/src/mergeWith');
 
@@ -47,10 +46,24 @@ var parseSelector = function (selector) {
     selector
   };
 };
+
+var mergeSelectors = function (selector1, selector2) {
+
+  var vnode1Sel = parseSelector(selector1);
+  var vnode2Sel = parseSelector(selector2);
+
+  var classes = ['']
+    .concat(vnode1Sel.classes)
+    .concat(vnode2Sel.classes);
+
+  return vnode2Sel.tag + vnode2Sel.id + classes.join('.');
+};
+
 // Merge some data properties, favoring vnode2
 // Chain all hook and eventlistener functions together
 // Concat selectors together
 var mergeVnodes = curryN(2, function (vnode1, vnode2) {
+
   var merged = reduce(
     mergeKey(vnode1.data, vnode2.data),
     {},
@@ -62,19 +75,12 @@ var mergeVnodes = curryN(2, function (vnode1, vnode2) {
     merged,
     ['on', 'hook']
   );
-  var data = compose(mergeObj(vnode1.data), mergeObj(vnode2.data))(chained);
+
   var children = concat(vnode1.children || [], vnode2.children || []);
 
-  var vnode1Sel = parseSelector(vnode1.sel);
-  var vnode2Sel = parseSelector(vnode2.sel);
-
-  var classes = ['']
-    .concat(vnode1Sel.classes)
-    .concat(vnode2Sel.classes);
-
   return h(
-    vnode2Sel.tag + vnode2Sel.id + classes.join('.'),
-    data,
+    mergeSelectors(vnode1.sel, vnode2.sel),
+    chained,
     children
   );
 });
