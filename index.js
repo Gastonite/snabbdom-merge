@@ -41,27 +41,42 @@ var parseSelector = function (selector) {
     selector
   }
 }
-// Merge some data properties, favoring vnode2
-// Chain all hook and eventlistener functions together
-// Concat selectors together
-var merge = curryN(2, function (vnode1, vnode2) {
-  var toMerge = ['props', 'class', 'style', 'attrs', 'dataset']
-  var merged = reduce(mergeKey(vnode1.data, vnode2.data), {}, toMerge)
-  var toChain = ['on', 'hook']
-  var chained = reduce(chainFuncs(vnode1.data, vnode2.data), merged, toChain)
-  var data = compose(mergeObj(vnode1.data), mergeObj(vnode2.data))(chained)
-  var children = concat(vnode1.children || [], vnode2.children || [])
 
-  var vnode1Sel = parseSelector(vnode1.sel)
-  var vnode2Sel = parseSelector(vnode2.sel)
+var mergeSelectors = function (selector1, selector2) {
+
+  var vnode1Sel = parseSelector(selector1)
+  var vnode2Sel = parseSelector(selector2)
 
   var classes = ['']
     .concat(vnode1Sel.classes)
     .concat(vnode2Sel.classes)
 
+  return vnode2Sel.tag + vnode2Sel.id + classes.join('.')
+}
+
+// Merge some data properties, favoring vnode2
+// Chain all hook and eventlistener functions together
+// Concat selectors together
+var merge = curryN(2, function (vnode1, vnode2) {
+
+
+  var merged = reduce(
+    mergeKey(vnode1.data, vnode2.data),
+    {},
+    ['props', 'class', 'style', 'attrs', 'dataset']
+  )
+
+  var chained = reduce(
+    chainFuncs(vnode1.data, vnode2.data),
+    merged,
+    ['on', 'hook']
+  )
+
+  var children = concat(vnode1.children || [], vnode2.children || [])
+
   return h(
-    vnode2Sel.tag + vnode2Sel.id + classes.join('.'),
-    data,
+    mergeSelectors(vnode1.sel, vnode2.sel),
+    chained,
     children
   )
 })
