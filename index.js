@@ -77,7 +77,9 @@ var merge = curryN(2, function (vnode1, vnode2) {
   return h(
     mergeSelectors(vnode1.sel, vnode2.sel),
     chained,
-    children
+    children.length > 0
+      ? children
+      : vnode2.text || vnode1.text
   )
 })
 
