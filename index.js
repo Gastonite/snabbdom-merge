@@ -47,6 +47,10 @@ var parseSelector = function (selector) {
   };
 };
 
+
+/**
+ * Concat two CSS selectors together
+ */
 var mergeSelectors = function (selector1, selector2) {
 
   var vnode1Sel = parseSelector(selector1);
@@ -60,9 +64,8 @@ var mergeSelectors = function (selector1, selector2) {
 };
 
 // Merge some data properties, favoring vnode2
-// Chain all hook and eventlistener functions together
-// Concat selectors together
 var mergeVnodes = curryN(2, function (vnode1, vnode2) {
+
 
   var merged = reduce(
     mergeKey(vnode1.data, vnode2.data),
@@ -70,6 +73,7 @@ var mergeVnodes = curryN(2, function (vnode1, vnode2) {
     ['props', 'class', 'style', 'attrs', 'dataset']
   );
 
+  // Chain all hook and eventlistener functions together
   var chained = reduce(
     chainFuncs(vnode1.data, vnode2.data),
     merged,
