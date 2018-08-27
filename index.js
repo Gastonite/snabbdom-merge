@@ -64,6 +64,9 @@ var mergeSelectors = function (selector1, selector2) {
 // Merge some data properties, favoring vnode2
 var merge = curryN(2, function (vnode1, vnode2) {
 
+  if (typeof vnode1 === 'string' || typeof vnode2 === 'string')
+    return vnode2
+
   var data1 = vnode1 && vnode1.data || {}
   var data2 = vnode2 && vnode2.data || {}
 
