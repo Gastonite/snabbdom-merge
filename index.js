@@ -1,12 +1,11 @@
 var h = require('snabbdom/h').default
 var curryN = require('ramda/src/curryN')
-var map = require('ramda/src/map')
 var mergeObj = require('ramda/src/merge')
 var assoc = require('ramda/src/assoc')
 var reduce = require('ramda/src/reduce')
-var compose = require('ramda/src/compose')
 var concat = require('ramda/src/concat')
 var mergeWith = require('ramda/src/mergeWith')
+var mergeSelectors = require('./merge-selectors')
 
 // Chain multiple event handlers or hook functions together 
 var chainFuncs = curryN(4, function (data1, data2, result, key) {
@@ -31,35 +30,7 @@ var mergeKey = curryN(4, function (data1, data2, result, key) {
   )
 })
 
-var parseSelector = function (selector) {
 
-  var matches = selector.match(/\#[\w-]+/, '')
-  var id = matches && matches[0] || ''
-  var selector = (!id ? selector : selector.replace(id, '')).split('.')
-
-  return {
-    tag: selector[0],
-    classes: selector.slice(1),
-    id,
-    selector
-  }
-}
-
-
-/**
- * Concat two CSS selectors together
- */
-var mergeSelectors = function (selector1, selector2) {
-
-  var vnode1Sel = parseSelector(selector1)
-  var vnode2Sel = parseSelector(selector2)
-
-  var classes = ['']
-    .concat(vnode1Sel.classes)
-    .concat(vnode2Sel.classes)
-
-  return vnode2Sel.tag + vnode2Sel.id + classes.join('.')
-}
 
 // Merge some data properties, favoring vnode2
 var merge = curryN(2, function (vnode1, vnode2) {
