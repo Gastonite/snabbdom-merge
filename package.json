@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/jayrbolton/snabbdom-transform#readme",
   "dependencies": {
-    "ramda": "0.23.0"
+    "ramda": "^0.23.0"
   },
   "devDependencies": {
     "snabbdom": "0.6.3",
