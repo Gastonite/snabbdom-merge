@@ -3,7 +3,7 @@ var parseSelector = function (selector) {
 
   if (typeof selector !== 'string')
     selector = ''
-    
+
   var matches = selector.match(/\#[\w-]+/, '')
   var id = matches && matches[0] || ''
   var selector = (!id ? selector : selector.replace(id, '')).split('.')
@@ -28,7 +28,7 @@ var mergeSelectors = function (input1, input2) {
     .concat(selector2.classes)
     .filter(Boolean)
 
-  return (selector2.tag || selector1.tag) + selector2.id +  '.' + classes.join('.')
+  return (selector2.tag || selector1.tag) + selector2.id + '.' + classes.join('.')
 }
 
 module.exports = mergeSelectors
