@@ -21,6 +21,7 @@ var parseSelector = function (selector) {
  */
 var mergeSelectors = function (input1, input2) {
 
+  //pouet
   var selector1 = parseSelector(input1)
   var selector2 = parseSelector(input2)
 
@@ -28,7 +29,11 @@ var mergeSelectors = function (input1, input2) {
     .concat(selector2.classes)
     .filter(Boolean)
 
-  return (selector2.tag || selector1.tag) + selector2.id + '.' + classes.join('.')
+  return (
+    (selector2.tag || selector1.tag) +
+    (selector2.id || selector1.id) +
+    '.' + classes.join('.')
+  )
 }
 
 module.exports = mergeSelectors
