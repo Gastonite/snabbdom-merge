@@ -3,6 +3,7 @@ var curryN = require('ramda/src/curryN');
 var mergeObj = require('ramda/src/merge');
 var assoc = require('ramda/src/assoc');
 var reduce = require('ramda/src/reduce');
+var merge = require('ramda/src/merge');
 var concat = require('ramda/src/concat');
 var mergeWith = require('ramda/src/mergeWith');
 var mergeSelectors = require('./merge-selectors');
@@ -47,7 +48,7 @@ var mergeVnodes = curryN(2, function (vnode1, vnode2) {
 
   var merged = reduce(
     mergeKey(data1, data2),
-    {},
+    merge(data1, data2),
     ['props', 'class', 'style', 'attrs', 'dataset']
   );
 
