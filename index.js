@@ -66,16 +66,18 @@ var mergeSelectors = function (selector1, selector2) {
 // Merge some data properties, favoring vnode2
 var mergeVnodes = curryN(2, function (vnode1, vnode2) {
 
+  var data1 = vnode1 && vnode1.data || {};
+  var data2 = vnode2 && vnode2.data || {};
 
   var merged = reduce(
-    mergeKey(vnode1.data, vnode2.data),
+    mergeKey(data1, data2),
     {},
     ['props', 'class', 'style', 'attrs', 'dataset']
   );
 
   // Chain all hook and eventlistener functions together
   var chained = reduce(
-    chainFuncs(vnode1.data, vnode2.data),
+    chainFuncs(data1, data2),
     merged,
     ['on', 'hook']
   );
