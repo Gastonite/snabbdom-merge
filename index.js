@@ -51,10 +51,17 @@ var parseSelector = function (selector) {
 // Chain all hook and eventlistener functions together
 // Concat selectors together
 var mergeVnodes = curryN(2, function (vnode1, vnode2) {
-  var toMerge = ['props', 'class', 'style', 'attrs', 'dataset'];
-  var merged = reduce(mergeKey(vnode1.data, vnode2.data), {}, toMerge);
-  var toChain = ['on', 'hook'];
-  var chained = reduce(chainFuncs(vnode1.data, vnode2.data), merged, toChain);
+  var merged = reduce(
+    mergeKey(vnode1.data, vnode2.data),
+    {},
+    ['props', 'class', 'style', 'attrs', 'dataset']
+  );
+
+  var chained = reduce(
+    chainFuncs(vnode1.data, vnode2.data),
+    merged,
+    ['on', 'hook']
+  );
   var data = compose(mergeObj(vnode1.data), mergeObj(vnode2.data))(chained);
   var children = concat(vnode1.children || [], vnode2.children || []);
 
