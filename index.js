@@ -1,12 +1,13 @@
-var h = require('snabbdom/h').default;
 var curryN = require('ramda/src/curryN');
 var mergeObj = require('ramda/src/merge');
+var isEmpty = require('ramda/src/isEmpty');
 var assoc = require('ramda/src/assoc');
 var reduce = require('ramda/src/reduce');
 var merge = require('ramda/src/merge');
 var concat = require('ramda/src/concat');
 var mergeWith = require('ramda/src/mergeWith');
 var mergeSelectors = require('./merge-selectors');
+var isString = x => typeof x === 'string';
 
 // Chain multiple event handlers or hook functions together 
 var chainFuncs = curryN(4, function (data1, data2, result, key) {
@@ -35,8 +36,6 @@ var mergeKey = curryN(4, function (data1, data2, result, key) {
 });
 
 
-
-
 // Merge some data properties, favoring vnode2
 var mergeVnodes = curryN(2, function (vnode1, vnode2) {
 
@@ -61,13 +60,16 @@ var mergeVnodes = curryN(2, function (vnode1, vnode2) {
 
   var children = concat(vnode1.children || [], vnode2.children || []);
 
-  return h(
-    mergeSelectors(vnode1.sel, vnode2.sel),
-    chained,
-    children.length > 0
-      ? children
-      : vnode2.text || vnode1.text
-  );
+  return {
+    sel: mergeSelectors(vnode1.sel, vnode2.sel) || undefined,
+    data: chained,
+    children: isEmpty(children) ? undefined : children,
+    text: isString(vnode2.text)
+      ? vnode2.text
+      : (isString(vnode1.text)
+        ? vnode1.text
+        : undefined)
+  };
 });
 
 module.exports = mergeVnodes;

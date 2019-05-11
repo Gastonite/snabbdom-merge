@@ -1,19 +1,22 @@
+var isEmpty = require('ramda/src/isEmpty');
+var match = require('ramda/src/match');
 
-var parseSelector = function (selector) {
+var parseSelector = function (input) {
 
-  if (typeof selector !== 'string')
-    selector = '';
+  if (!input || typeof input !== 'string')
+    input = '';
 
-  var matches = selector.match(/\#[\w-]+/, ''); // eslint-disable-line no-useless-escape
-  var id = matches && matches[0] || '';
+  var matches = match(/#[\w-]+/, input);
+  var id = matches && matches[0];
 
-  selector = (!id ? selector : selector.replace(id, '')).split('.');
+  var selector = (!id ? input : input.replace(id, '')).split('.');
+
+  var classes = isEmpty(selector) ? [] : selector.slice(1);
 
   return {
     tag: selector[0],
-    classes: selector.slice(1),
+    classes,
     id,
-    selector
   };
 };
 
@@ -29,10 +32,13 @@ var mergeSelectors = function (input1, input2) {
     .concat(selector2.classes)
     .filter(Boolean);
 
-  return (
-    (selector2.tag || selector1.tag) +
-    (selector2.id || selector1.id) +
-    '.' + classes.join('.')
+  var tag = selector2.tag || selector1.tag;
+  var id = selector2.id || selector1.id || '';
+
+  return tag + id + (
+    isEmpty(classes)
+      ? ''
+      : '.' + classes.join('.')
   );
 };
 
