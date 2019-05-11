@@ -59,12 +59,13 @@ var mergeVnodes = curryN(2, function (vnode1, vnode2) {
   );
 
   var children = concat(vnode1.children || [], vnode2.children || []);
+  var hasChildren = !isEmpty(children);
 
   return {
     sel: mergeSelectors(vnode1.sel, vnode2.sel) || undefined,
     data: chained,
-    children: isEmpty(children) ? undefined : children,
-    text: isString(vnode2.text)
+    children: hasChildren ? children : undefined,
+    text: hasChildren ? undefined : isString(vnode2.text)
       ? vnode2.text
       : (isString(vnode1.text)
         ? vnode1.text
