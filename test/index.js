@@ -46,10 +46,71 @@ test('it composes hooks', function (t) {
 
 
 test('it appends and prepends children', function (t) {
-  var children = [h('span', 'x'), h('span', 'y'), h('span', 'z')];
-  var vnode1 = h('p', [children[0]]);
-  var vnode2 = h('p', [children[1], children[2]]);
-  var merged = merge(vnode1, vnode2);
+
+  var children = [
+    h('span', 'x'),
+    h('span', 'y'),
+    h('span', 'z')
+  ];
+
+  var merged = merge(
+    h('p', [
+      children[0]
+    ]),
+    h('p', [
+      children[1],
+      children[2]
+    ]),
+  );
+
   t.deepEqual(merged.children, children);
+
   t.end();
 });
+
+test('text win over children', function (t) {
+
+  var merged = merge(
+    h('p', [
+      h('span', 'x'),
+      h('span', 'y'),
+      h('span', 'z')
+    ]),
+    h('p', 'hello'),
+  );
+
+  t.deepEqual(merged, {
+    sel: 'p',
+    data: {},
+    children: undefined,
+    text: 'hello'
+  });
+
+  t.end();
+});
+
+test('text node win', function (t) {
+
+  var merged = merge(
+    h('p', [
+      h('span', 'x'),
+      h('span', 'y'),
+      h('span', 'z')
+    ]),
+    {
+      children: undefined,
+      sel: undefined,
+      text: 'hello'
+    },
+  );
+
+  t.deepEqual(merged, {
+    sel: undefined,
+    data: {},
+    children: undefined,
+    text: 'hello'
+  });
+
+  t.end();
+});
+
