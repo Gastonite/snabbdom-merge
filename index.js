@@ -64,7 +64,7 @@ var mergeVnodes = curryN(2, function (vnode1, vnode2) {
   var hasChildren = !isEmpty(children);
 
   return {
-    sel: 'sel' in vnode2 & vnode2.sel === undefined
+    sel: 'sel' in vnode2 && vnode2.sel === undefined
       ? undefined
       : mergeSelectors(vnode1.sel, vnode2.sel) || undefined,
     data: reject(isEmpty)(chained),
