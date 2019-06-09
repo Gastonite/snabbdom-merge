@@ -13,7 +13,7 @@ var isString = x => typeof x === 'string';
 // Merge two vnodes, favoring vnode2
 var mergeVnodes = curryN(2, function (vnode1, vnode2) {
 
-  if (typeof vnode1 === 'string' || typeof vnode2 === 'string')
+  if (typeof vnode1 === 'string' || typeof vnode2 === 'string' || !vnode2)
     return vnode2;
 
   var data1 = vnode1 && vnode1.data || {};
@@ -57,16 +57,18 @@ var mergeVnodes = curryN(2, function (vnode1, vnode2) {
     ['on', 'hook']
   );
 
-  var children = 'children' in vnode2 & vnode2.children === undefined
+  var children = 'children' in vnode2 && vnode2.children === undefined
     ? []
     : concat(vnode1.children || [], vnode2.children || []);
 
   var hasChildren = !isEmpty(children);
 
-  return {
-    sel: 'sel' in vnode2 && vnode2.sel === undefined
-      ? undefined
-      : mergeSelectors(vnode1.sel, vnode2.sel) || undefined,
+  var sel = vnode2 && 'sel' in vnode2 && vnode2.sel === undefined
+    ? undefined
+    : mergeSelectors(vnode1.sel, vnode2.sel) || undefined;
+
+  return !sel ? undefined : {
+    sel,
     data: reject(isEmpty)(chained),
     children: hasChildren ? children : undefined,
     text: hasChildren ? undefined : isString(vnode2.text)
