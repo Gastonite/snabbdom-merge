@@ -55,4 +55,4 @@ export const mergeAllSelectors = unapply(converge(
   ]
 ))
 
-export default mergeSelectors
+// export default mergeAllSelectors

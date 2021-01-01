@@ -6,12 +6,13 @@ import merge from 'ramda/src/merge.js'
 import reject from 'ramda/src/reject.js'
 import concat from 'ramda/src/concat.js'
 import mergeWith from 'ramda/src/mergeWith.js'
-import mergeSelectors from './mergeSelectors.js'
+import { mergeSelectors } from './mergeSelectors.js'
+
+
+
+
+
 const isString = x => typeof x === 'string'
-
-
-
-
 
 export const mergeViews = curryN(2, (vnode1, vnode2) => {
 
